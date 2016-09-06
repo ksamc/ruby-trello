@@ -39,16 +39,12 @@ module Trello
       end
 
       it 'creates a new webhook and saves it on Trello', refactor: true do
-        payload = { name: 'Test Card', desc: nil }
-
         webhook = webhooks_details.first
         result = JSON.generate(webhook)
 
-        expected_payload = {description: webhook[:description], idModel: webhook[:idModel], callbackURL: webhook[:callbackURL]}
-
         expect(client)
           .to receive(:post)
-          .with("/webhooks", expected_payload)
+          .with("/webhooks?idModel=#{webhook[:idModel]}&callbackURL=#{webhook[:callbackURL]}&description=#{webhook[:description]}")
           .and_return result
 
         webhook = Webhook.create(webhooks_details.first)
